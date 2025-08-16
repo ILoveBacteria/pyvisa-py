@@ -811,3 +811,18 @@ class PyVisaLibrary(highlevel.VisaLibraryBase):
 
         """
         return StatusCode.error_nonimplemented_operation
+    
+    def query_srq(self, session)-> Tuple[bool, StatusCode]:
+        """
+        Backend implementation entry point for query_srq.
+        session -> internal object that pyvisa-py uses to locate the resource object.
+        Should return True/False.
+        """
+        try:
+            sess = self.sessions[session]
+        except KeyError:
+            return False, self.handle_return_value(session, StatusCode.error_invalid_object)
+        if not hasattr(sess, "query_srq"):
+            raise NotImplementedError("query_srq not implemented for this resource")
+        srq, status_code = sess.query_srq()
+        return srq, self.handle_return_value(session, status_code)

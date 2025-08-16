@@ -857,6 +857,13 @@ class GPIBSession(_GPIBCommon):  # type: ignore[no-redef]
                 return StatusCode.error_nonsupported_attribute_state
 
         return super(GPIBSession, self)._set_attribute(attribute, attribute_state)
+    
+    def query_srq(self) -> Tuple[bool, StatusCode]:
+        LOGGER.debug("Query GPIB SRQ")        
+        try:
+            return gpib.lines(self.controller.id) & 0x2000, StatusCode.success
+        except gpib.GpibError as e:
+            return False, convert_gpib_error(e, self.interface.ibsta(), "query srq")
 
 
 @Session.register(constants.InterfaceType.gpib, "INTFC")
