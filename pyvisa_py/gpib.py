@@ -861,7 +861,7 @@ class GPIBSession(_GPIBCommon):  # type: ignore[no-redef]
     def query_srq(self) -> Tuple[bool, StatusCode]:
         LOGGER.debug("Query GPIB SRQ")        
         try:
-            return gpib.lines(self.controller.id) & 0x2000, StatusCode.success
+            return bool(gpib.lines(self.controller.id) & 0x2000), StatusCode.success
         except gpib.GpibError as e:
             return False, convert_gpib_error(e, self.interface.ibsta(), "query srq")
 
